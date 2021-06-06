@@ -6,7 +6,7 @@ function ButtonLink(props) {
 
   return (
     <button
-      class={` px-4 text-xs md:text-sm font-semibold  flex items-center justify-center   ${theming}`}
+      className={` px-4 text-xs md:text-sm font-semibold  flex items-center justify-center   ${theming}`}
     >
       <a href={props.url}>{props.name}</a>
     </button>

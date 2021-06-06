@@ -9,9 +9,9 @@ function DomainBoard(props) {
     "news",
   ];
   return (
-    <div class="flex flex-wrap  mt-4">
+    <div className="flex flex-wrap  mt-4">
       {domain_list.map((domain) => (
-        <DomainCard name={domain} setActiveDomain={props.setActiveDomain} />
+        <DomainCard name={domain} key={domain} setActiveDomain={props.setActiveDomain} activeDomain={props.activeDomain} />
       ))}
     </div>
   );

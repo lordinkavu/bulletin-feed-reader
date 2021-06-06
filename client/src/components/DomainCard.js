@@ -31,10 +31,17 @@ function DomainCard(props) {
       color = "red";
   }
 
+  function setDomain() {
+    props.setActiveDomain(props.name);
+  }
   return (
     <div
-      onClick={props.setActiveDomain(props.name)}
-      class={`font-light px-4 py-1 text-base  m-2 border-2 border-${color}-500`}
+      onClick={setDomain}
+      className={`font-light px-4 py-1 text-sm md:text-base cursor-pointer m-2  ${
+        props.name === props.activeDomain
+          ? `text-white bg-${color}-500`
+          : ` border-2 border-${color}-500`
+      } `}
     >
       {props.name + " " + emoji}
     </div>

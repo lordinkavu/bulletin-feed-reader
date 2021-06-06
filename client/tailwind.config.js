@@ -1,5 +1,9 @@
 module.exports = {
-    purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+    purge: {content:['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  options:{
+    safelist:[/^bg-[a-zA-Z]+-500$/,/^border-[a-zA-Z]+-500$/]
+  }
+  },
     darkMode: false, 
     theme: {
     
@@ -11,7 +15,9 @@ module.exports = {
           extend:{
             minWidth:{
               '20': '5rem',
-            }
+            },
+            
+       
           }
       
     },
