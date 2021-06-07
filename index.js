@@ -6,17 +6,19 @@ dotenv.config();
 const db = require("./db/db-methods");
 const cors = require("cors");
 const path = require("path");
+const port = process.env.PORT || 8080;
 
 app.use(cors({ origin: true, credentials: true }));
-console.log(process.env.MONGO_USERNAME);
-console.log(process.env.MONGO_PASSWORD);
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@bullet.xvncb.mongodb.net/bulletdb?retryWrites=true&w=majority`;
 const db_obj = new db(uri);
 
 db_obj
   .init()
   .then(() => {
-  
+    app.listen(port, () => {
+      console.log(`app listening on port ${port}`);
+    });
+    
   })
   .catch((e) => {
     console.log(e);
@@ -37,9 +39,6 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`app listening on port ${port}`);
-});
+
 
 
