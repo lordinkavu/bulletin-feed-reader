@@ -8,7 +8,8 @@ const cors = require("cors");
 const path = require("path");
 
 app.use(cors({ origin: true, credentials: true }));
-
+console.log(process.env.MONGO_USERNAME);
+console.log(process.env.MONGO_PASSWORD);
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@bullet.xvncb.mongodb.net/bulletdb?retryWrites=true&w=majority`;
 const db_obj = new db(uri);
 
