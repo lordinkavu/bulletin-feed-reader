@@ -15,9 +15,7 @@ const db_obj = new db(uri);
 db_obj
   .init()
   .then(() => {
-    app.listen(port, () => {
-      console.log(`app listening on port ${port}`);
-    });
+  
   })
   .catch((e) => {
     console.log(e);
@@ -37,6 +35,9 @@ app.get("/articles/:domain", async (req, res) => {
 app.use(express.static(path.join(__dirname, "client/build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
+app.listen(port, () => {
+  console.log(`app listening on port ${port}`);
 });
 
 const port = process.env.PORT || 8080;
