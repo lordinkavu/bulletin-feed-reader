@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 function ButtonLink(props) {
   let theming =
     props.type === "primary"
@@ -8,7 +9,7 @@ function ButtonLink(props) {
     <button
       className={` px-4 text-xs md:text-sm font-semibold  flex items-center justify-center   ${theming}`}
     >
-      <a href={props.url}>{props.name}</a>
+      <Link to={props.url}>{props.name}</Link>
     </button>
   );
 }
