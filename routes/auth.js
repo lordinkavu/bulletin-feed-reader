@@ -4,9 +4,7 @@ const {hash} = require('../utils/encrypt');
 const {insertOne} = require("../db");
 const passport = require("passport");
 
-router.get("/signup", (req, res) => {
-  res.sendStatus(200);
-});
+
 
 router.post("/signup", async (req, res) => {
   try {
@@ -20,12 +18,21 @@ router.post("/signup", async (req, res) => {
   } 
 });
 
-router.get('/login',(req,res)=>{
-  res.send("Login Page");
-})
 
-router.post('/login',passport.authenticate('local',{failureRedirect:'/auth/login'}),(req,res)=>{
-  res.json(req.user);
+
+router.post('/login', function(req,res,next){
+  passport.authenticate('local',function(err,user,info){
+    if(err) return res.status(400).send({message:"Unexpected error"});
+    if(!user) return res.status(400).send({message:"email or password not correct"});
+    req.login(user,function(err){
+      if(err){
+        return res.status(500).send({message:"Unexpected error. Please try again"});
+      }
+      return res.status(200).json(user);
+    })
+
+
+  })(req,res,next)
 })
 
 module.exports = router;

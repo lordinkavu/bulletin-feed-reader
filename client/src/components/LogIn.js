@@ -1,6 +1,7 @@
 import { useState , useContext} from "react";
 import axios from "axios";
 import { userContext } from "../Context";
+
 function LogIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,8 +19,10 @@ function LogIn(props) {
       console.log(res);
       setUser(res.data);
       
+      
     } catch (err) {
-      console.log(err);
+      console.log("Error occuredddd!",err);
+      
     }
   }
 

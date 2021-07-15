@@ -5,10 +5,13 @@ import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useState, Fragment } from "react";
-import { userContext } from "./Context";
+import  {userContext}  from "./Context";
+
+
 
 function App() {
   const [currentUser, setUser] = useState(null);
+  console.log("current user",currentUser);
   if (!currentUser) {
     return (
       <div className="App ">
@@ -16,8 +19,9 @@ function App() {
           <Header>
             <Fragment>
               {" "}
-              <ButtonLink url="/auth/login" name="Log in" type="secondary" />
               <ButtonLink url="/auth/signup" name="Sign up" type="primary" />
+              <ButtonLink url="/auth/login" name="Log in" type="secondary" />
+              
             </Fragment>
           </Header>
           <Switch>
@@ -55,7 +59,7 @@ function App() {
               <Body />
             </Route>
           </Switch>
-          <div>{currentUser.email}</div>
+          
         </userContext.Provider>
       </div>
     );
