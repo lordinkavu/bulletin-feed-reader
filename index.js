@@ -81,7 +81,7 @@ app.use("/auth", auth);
 
 
 
-app.get("/articles/:domain", async (req, res) => {
+/* app.get("/articles/:domain", async (req, res) => {
   const cursor = db_obj.client
     .db("bulletdb")
     .collection("articles")
@@ -90,7 +90,7 @@ app.get("/articles/:domain", async (req, res) => {
     .limit(50);
   const articles = await cursor.toArray();
   res.send({ articles: articles });
-});
+}); */
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));

@@ -1,25 +1,65 @@
 import Header from "./components/Header";
-import   Body  from "./components/Body";
+import Body from "./components/Body";
 import SignUp from "./components/SignUp";
-import { Switch, Route } from "react-router-dom";
+import LogIn from "./components/LogIn";
+import ButtonLink from "./components/ButtonLink";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { useState, Fragment } from "react";
+import { userContext } from "./Context";
 
 function App() {
-  return (
-    <div className="App ">
-      <Header />
-      <Switch>
-        <Route path="/auth/signup">
-          <SignUp/>
-        </Route>
-        <Route path='/auth/login'>
-          <div>Login</div>
-        </Route>
-        <Route path="/">
-          <Body/>
-        </Route>
-      </Switch>
-    </div>
-  );
+  const [currentUser, setUser] = useState(null);
+  if (!currentUser) {
+    return (
+      <div className="App ">
+        <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
+          <Header>
+            <Fragment>
+              {" "}
+              <ButtonLink url="/auth/login" name="Log in" type="secondary" />
+              <ButtonLink url="/auth/signup" name="Sign up" type="primary" />
+            </Fragment>
+          </Header>
+          <Switch>
+            <Route path="/auth/signup">
+              <SignUp />
+            </Route>
+            <Route path="/auth/login">
+              <LogIn />
+            </Route>
+            <Route path="/">
+              <Body />
+            </Route>
+          </Switch>
+        </userContext.Provider>
+      </div>
+    );
+  } else {
+    return (
+      <div className="App ">
+        <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
+          <Header>
+            <Fragment>
+              <ButtonLink url="/" name="My feed" type="primary" />
+              <ButtonLink url="/auth/logout" name="Log out" type="secondary" />
+            </Fragment>
+          </Header>
+          <Switch>
+            <Route path="/auth/signup">
+              <Redirect to="/" />
+            </Route>
+            <Route path="/auth/login">
+              <Redirect to="/" />
+            </Route>
+            <Route path="/">
+              <Body />
+            </Route>
+          </Switch>
+          <div>{currentUser.email}</div>
+        </userContext.Provider>
+      </div>
+    );
+  }
 }
 
 export default App;

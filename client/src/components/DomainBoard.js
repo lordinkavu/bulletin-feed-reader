@@ -8,6 +8,7 @@ function DomainBoard(props) {
     "comic",
     "news",
   ];
+  
   return (
     <div className="flex flex-wrap  mt-4">
       {domain_list.map((domain) => (
