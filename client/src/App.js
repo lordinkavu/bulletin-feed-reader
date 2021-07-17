@@ -4,14 +4,26 @@ import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
 import { Switch, Route, Redirect } from "react-router-dom";
-import { useState, Fragment } from "react";
-import  {userContext}  from "./Context";
-
-
+import { useState, Fragment, useEffect } from "react";
+import { userContext } from "./Context";
+import axios from "axios";
 
 function App() {
   const [currentUser, setUser] = useState(null);
-  console.log("current user",currentUser);
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        
+        const res = await axios.get("/auth/check",{withCredentials:true});
+        console.log(res);
+
+      } catch (e) {
+        console.log(e.response.status);
+      }
+    }
+    checkAuth();
+  }, [currentUser]);
+  console.log("current user", currentUser);
   if (!currentUser) {
     return (
       <div className="App ">
@@ -21,7 +33,6 @@ function App() {
               {" "}
               <ButtonLink url="/auth/signup" name="Sign up" type="primary" />
               <ButtonLink url="/auth/login" name="Log in" type="secondary" />
-              
             </Fragment>
           </Header>
           <Switch>
@@ -59,7 +70,6 @@ function App() {
               <Body />
             </Route>
           </Switch>
-          
         </userContext.Provider>
       </div>
     );

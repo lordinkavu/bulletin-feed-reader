@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { userContext } from "../Context";
 
-function LogIn(props) {
+function LogIn( ) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(userContext);
@@ -23,7 +23,6 @@ function LogIn(props) {
       switch (e.response.status) {
         case 401:
           console.log("email or password is not correct ig");
-        
           break;
         case 500:
           console.log("internal server error");
@@ -32,9 +31,6 @@ function LogIn(props) {
           console.log("oops! there's an unexpected error");
       }
     }
-
-    /*  } catch (err) {
-      console.log(err.message); */
   }
 
   return (

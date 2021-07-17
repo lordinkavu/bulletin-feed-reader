@@ -14,7 +14,7 @@ function Body() {
         console.log(e);
       }
     }
-    fetchdata();
+    //fetchdata();
   }, [activeDomain]);
 
   return (
