@@ -1,11 +1,11 @@
-import { useState , useContext} from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { userContext } from "../Context";
 
 function LogIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {setUser} = useContext(userContext);
+  const { setUser } = useContext(userContext);
   function handleEmailChange(e) {
     setEmail(e.target.value);
   }
@@ -16,14 +16,25 @@ function LogIn(props) {
     event.preventDefault();
     try {
       const res = await axios.post("/auth/login", { email, password });
-      console.log(res);
       setUser(res.data);
-      
-      
-    } catch (err) {
-      console.log("Error occuredddd!",err);
-      
+    } catch (e) {
+      setEmail("");
+      setPassword("");
+      switch (e.response.status) {
+        case 401:
+          console.log("email or password is not correct ig");
+        
+          break;
+        case 500:
+          console.log("internal server error");
+          break;
+        default:
+          console.log("oops! there's an unexpected error");
+      }
     }
+
+    /*  } catch (err) {
+      console.log(err.message); */
   }
 
   return (

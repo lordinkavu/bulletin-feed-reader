@@ -1,38 +1,41 @@
 const express = require("express");
 const router = express.Router();
-const {hash} = require('../utils/encrypt');
-const {insertOne} = require("../db");
+const { hash } = require("../utils/encrypt");
+const { insertOne } = require("../db");
 const passport = require("passport");
 
+// Authentcation middleware
 
+function authenticate(req, res, next) {
+  passport.authenticate("local", function (err, user, info) {
+    if (err) return res.sendStatus(500);
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    req.login(user, function (err) {
+      if (err) return res.sendStatus(500);
+      return next();
+    });
+  })(req,res,next); 
+}
 
 router.post("/signup", async (req, res) => {
   try {
     const password = await hash(req.body.password);
     const email = req.body.email;
-    await insertOne("users",{email,password});
+    await insertOne("users", { email, password });
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
     res.send(e);
-  } 
+  }
+});
+
+router.post("/login", authenticate , (req,res)=>{
+  const user = req.user;
+  res.json({_id:user._id,email:user.email});
 });
 
 
-
-router.post('/login', function(req,res,next){
-  passport.authenticate('local',function(err,user,info){
-    if(err) return res.status(400).send({message:"Unexpected error"});
-    if(!user) return res.status(400).send({message:"email or password not correct"});
-    req.login(user,function(err){
-      if(err){
-        return res.status(500).send({message:"Unexpected error. Please try again"});
-      }
-      return res.status(200).json(user);
-    })
-
-
-  })(req,res,next)
-})
-
 module.exports = router;
+
