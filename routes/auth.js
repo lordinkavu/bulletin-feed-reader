@@ -12,11 +12,13 @@ function authenticate(req, res, next) {
     if (!user) {
       return res.sendStatus(401);
     }
+
     req.login(user, function (err) {
       if (err) return res.sendStatus(500);
+
       return next();
     });
-  })(req,res,next); 
+  })(req, res, next);
 }
 
 router.post("/signup", async (req, res) => {
@@ -31,19 +33,17 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", authenticate , (req,res)=>{
+router.post("/login", authenticate, (req, res) => {
   const user = req.user;
-  res.json({_id:user._id,email:user.email});
+  res.json({ _id: user._id, email: user.email });
 });
 
-router.get('/check', (req,res)=>{
-  if(req.isAuthenticated()){
+router.get("/check", (req, res) => {
+  if (req.isAuthenticated()) {
     res.json(req.user);
-  }else{
+  } else {
     res.sendStatus(401);
   }
-})
-
+});
 
 module.exports = router;
-

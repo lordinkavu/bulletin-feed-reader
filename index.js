@@ -5,7 +5,7 @@ const db = require("./db");
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
-const FileStore = require('session-file-store')(session);
+const FileStore = require("session-file-store")(session);
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { validPassword } = require("./utils/encrypt");
@@ -16,7 +16,8 @@ const app = express();
 dotenv.config();
 const port = process.env.PORT || 8080;
 
-app.use(cors({ origin: true, credentials: true }));
+//app.use(cors({ origin: true, credentials: true }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -24,7 +25,7 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-    store: new FileStore({})
+    store: new FileStore(),
   })
 );
 
@@ -52,21 +53,29 @@ passport.use(
   })
 );
 
-passport.serializeUser(function(user,done){
-  console.log("serialising", user);
-  done(null,user.email);
+passport.serializeUser(function (user, done) {
+  done(null, user._id);
 });
 
-passport.deserializeUser(async function(id,done){
-  let error=null;
-  let user;
+passport.deserializeUser(function (id, done) {
+  let error = null;
+  let user = null;
+  db.findOne("users", { _id: id })
+    .then((user) => {
+   
+      done(error, {_id:user._id,email:user.email});
+    })
+    .catch((error) => {
+     done(error, user);
+    });
+  /* 
   try{
     user =  await db.findOne("users",{_id:id});
   }catch(e){
     error = e;
-  }
-  done(error, user);
- 
+  } */
+
+  //done(null, { _id: "vdhsvhs", email: "test", password: "test" });
 });
 
 db.connect()
@@ -82,7 +91,7 @@ db.connect()
 
 app.use("/auth", auth);
 
-
+app.get("/favicon.ico", (req, res) => res.sendStatus(200));
 
 /* app.get("/articles/:domain", async (req, res) => {
   const cursor = db_obj.client

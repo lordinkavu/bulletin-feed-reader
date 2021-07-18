@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectID } = require("mongodb");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -7,8 +7,10 @@ const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PAS
 
 async function connect() {
   try {
-    const mongodb = await MongoClient.connect(uri, { useUnifiedTopology: true });
-    client = mongodb.db('bulletdb');
+    const mongodb = await MongoClient.connect(uri, {
+      useUnifiedTopology: true,
+    });
+    client = mongodb.db("bulletdb");
     return Promise.resolve();
   } catch (e) {
     console.log(e);
@@ -21,21 +23,21 @@ function get() {
   return client;
 }
 
-async function insertOne(collection,data){
-  try{
+async function insertOne(collection, data) {
+  try {
     const res = await client.collection(collection).insertOne(data);
     Promise.resolve(res);
-  }catch(e){
+  } catch (e) {
     Promise.reject(e);
   }
-  
 }
 
-async function findOne(collection,query){
-  try{
+async function findOne(collection, query) {
+  if (query._id) query._id = new ObjectID(query._id);
+  try {
     const user = await client.collection(collection).findOne(query);
     return user;
-  }catch(e){
+  } catch (e) {
     return Promise.reject(e);
   }
 }
@@ -49,7 +51,7 @@ module.exports = {
   get,
   close,
   insertOne,
-  findOne
+  findOne,
 };
 
 /* class databaseMethods {

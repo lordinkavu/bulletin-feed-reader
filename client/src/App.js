@@ -10,19 +10,18 @@ import axios from "axios";
 
 function App() {
   const [currentUser, setUser] = useState(null);
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        
-        const res = await axios.get("/auth/check",{withCredentials:true});
-        console.log(res);
-
-      } catch (e) {
-        console.log(e.response.status);
+  useEffect(()=>{
+    async function checkAuth(){
+      try{
+      const res = await axios.get('/auth/check',{withCredentials:true});
+      setUser(JSON.stringify(res.data));
+      }catch(e){
+        console.log(e);
       }
-    }
+    } 
     checkAuth();
-  }, [currentUser]);
+  },[currentUser]);
+ 
   console.log("current user", currentUser);
   if (!currentUser) {
     return (
@@ -47,6 +46,7 @@ function App() {
             </Route>
           </Switch>
         </userContext.Provider>
+        
       </div>
     );
   } else {
@@ -71,6 +71,7 @@ function App() {
             </Route>
           </Switch>
         </userContext.Provider>
+        
       </div>
     );
   }

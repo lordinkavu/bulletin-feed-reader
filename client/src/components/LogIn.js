@@ -16,7 +16,7 @@ function LogIn( ) {
     event.preventDefault();
     try {
       const res = await axios.post("/auth/login", { email, password });
-      setUser(res.data);
+      setUser(JSON.stringify(res.data));
     } catch (e) {
       setEmail("");
       setPassword("");
@@ -38,7 +38,7 @@ function LogIn( ) {
       <form action="/auth/login" method="POST" className="mb-4">
         <div className="mb-4">
           <label
-            for="email"
+            htmlFor="email"
             className=" block font-semibold text-gray-500 my-1"
           >
             Email
@@ -54,7 +54,7 @@ function LogIn( ) {
         </div>
         <div className="mb-6">
           <label
-            for="password"
+            htmlFor="password"
             className="block font-semibold text-gray-500 my-1"
           >
             {" "}
