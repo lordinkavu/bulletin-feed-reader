@@ -10,20 +10,28 @@ import axios from "axios";
 
 function App() {
   const [currentUser, setUser] = useState(null);
-  useEffect(()=>{
-    async function checkAuth(){
-      try{
-      const res = await axios.get('/auth/check',{withCredentials:true});
-      setUser(JSON.stringify(res.data));
-      }catch(e){
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await axios.get("/auth/check", { withCredentials: true });
+        setUser(JSON.stringify(res.data));
+      } catch (e) {
         console.log(e);
       }
-    } 
+      setIsLoading(false);
+    }
     checkAuth();
-  },[currentUser]);
- 
+  }, [currentUser]);
+
   console.log("current user", currentUser);
-  if (!currentUser) {
+  if (isLoading) {
+    return (
+      <div class=" flex justify-center items-center h-screen">
+        <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
+      </div>
+    );
+  } else if (!currentUser) {
     return (
       <div className="App ">
         <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
@@ -46,7 +54,6 @@ function App() {
             </Route>
           </Switch>
         </userContext.Provider>
-        
       </div>
     );
   } else {
@@ -71,7 +78,6 @@ function App() {
             </Route>
           </Switch>
         </userContext.Provider>
-        
       </div>
     );
   }
