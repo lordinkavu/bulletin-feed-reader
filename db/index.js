@@ -42,6 +42,19 @@ async function findOne(collection, query) {
   }
 }
 
+async function addSource(collection, query, data){
+  const field = query.field;
+  const _id = new ObjectID(query._id);
+  try{
+    const dataObj = {};
+    dataObj[field] = data;
+    const user = await client.collection(collection).updateOne({_id:_id},{$push:dataObj});
+    return user;
+  }catch(e){
+    return Promise.reject(e);
+  }
+}
+
 function close() {
   mongodb.close();
 }
@@ -52,6 +65,7 @@ module.exports = {
   close,
   insertOne,
   findOne,
+  addSource
 };
 
 /* class databaseMethods {

@@ -11,6 +11,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const { validPassword } = require("./utils/encrypt");
 
 const auth = require("./routes/auth");
+const user = require("./routes/user");
 
 const app = express();
 dotenv.config();
@@ -90,6 +91,7 @@ db.connect()
   });
 
 app.use("/auth", auth);
+app.use("/user",user);
 
 app.get("/favicon.ico", (req, res) => res.sendStatus(200));
 
