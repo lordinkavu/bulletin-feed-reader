@@ -25,7 +25,9 @@ router.post("/signup", async (req, res) => {
   try {
     const password = await hash(req.body.password);
     const email = req.body.email;
-    await insertOne("users", { email, password });
+    const domain = {};
+    
+    await insertOne("users", { email, password, domain });
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
@@ -35,7 +37,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", authenticate, (req, res) => {
   const user = req.user;
-  res.json({ _id: user._id, email: user.email });
+  res.json({email:user.email,domain:user.domain});
 });
 
 router.get("/check", (req, res) => {

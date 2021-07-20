@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+//import axios from "axios";
 import DomainBoard from "./DomainBoard";
 import ArticleList from "./ArticleList";
 function Body() {
   const [activeDomain, setActiveDomain] = useState("technology");
   const [articles, setArticles] = useState(null);
-  useEffect(() => {
+  /* useEffect(() => {
     async function fetchdata() {
       try {
         const res = await axios.get("articles/" + activeDomain);
@@ -15,7 +15,7 @@ function Body() {
       }
     }
     //fetchdata();
-  }, [activeDomain]);
+  }, [activeDomain]); */
 
   return (
     <React.Fragment>

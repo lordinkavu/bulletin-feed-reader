@@ -46,9 +46,9 @@ async function addSource(collection, query, data){
   const field = query.field;
   const _id = new ObjectID(query._id);
   try{
-    const dataObj = {};
-    dataObj[field] = data;
-    const user = await client.collection(collection).updateOne({_id:_id},{$push:dataObj});
+    const updateObj = {};
+    updateObj[field.data] = true;
+    const user = await client.collection(collection).findOneAndUpdate({_id:_id},{$set:updateObj},{returnOriginal:false});
     return user;
   }catch(e){
     return Promise.reject(e);

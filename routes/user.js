@@ -8,8 +8,10 @@ router.post('/add/:field/:domain',async function(req,res){
     }
     const _id = req.session.passport.user;
     try{
-        const user = await addSource("users",{_id:_id,field:req.params.field},req.params.domain);
-        res.json(user);
+        const data = await addSource("users",{_id:_id,field:req.params.field},req.params.domain);
+        const user = data.value;
+        console.log(data.value);
+        res.json({email:user.email,domain:user.domain});
       
     }catch(e){
         console.log(e);

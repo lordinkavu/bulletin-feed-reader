@@ -63,8 +63,8 @@ passport.deserializeUser(function (id, done) {
   let user = null;
   db.findOne("users", { _id: id })
     .then((user) => {
-   
-      done(error, {_id:user._id,email:user.email});
+      
+      done(error, {email:user.email,domain:user.domain});
     })
     .catch((error) => {
      done(error, user);

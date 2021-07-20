@@ -17,7 +17,7 @@ function App() {
         const res = await axios.get("/auth/check", { withCredentials: true });
         setUser(JSON.stringify(res.data));
       } catch (e) {
-        console.log(e);
+        setUser(null);
       }
       setIsLoading(false);
     }
@@ -27,8 +27,8 @@ function App() {
   console.log("current user", currentUser);
   if (isLoading) {
     return (
-      <div class=" flex justify-center items-center h-screen">
-        <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
+      <div className=" flex justify-center items-center h-screen">
+        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
       </div>
     );
   } else if (!currentUser) {
