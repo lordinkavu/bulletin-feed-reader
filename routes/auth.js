@@ -40,6 +40,11 @@ router.post("/login", authenticate, (req, res) => {
   res.json({email:user.email,domain:user.domain});
 });
 
+router.get('/logout',(req,res)=>{
+  req.logout();
+  res.sendStatus(200);
+})
+
 router.get("/check", (req, res) => {
   if (req.isAuthenticated()) {
     res.json(req.user);
@@ -47,5 +52,7 @@ router.get("/check", (req, res) => {
     res.sendStatus(401);
   }
 });
+
+
 
 module.exports = router;

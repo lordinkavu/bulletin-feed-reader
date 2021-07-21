@@ -1,14 +1,32 @@
-import React, { useContext } from "react";
+/*
+- make the handleAddClick and handleRemoveClick functions use the api verb patch instead of put.
+- study if domainMatch function is to be added to useEffect dependency array. 
+*/
+
+
+import React, { useContext, useEffect, useState } from "react";
 import { userContext } from "../Context";
 import axios from "axios";
 
-function DomainCardButton({ handleAddClick, handleRemoveClick }) {
+function DomainCardButton({ handleAddClick, handleRemoveClick, user ,domain }) {
+  const domainMatch = () => (user.domain[domain]===true)?true:false;
+  const [addDomain,setAddDomain]=useState(domainMatch());
+  useEffect(()=>{
+    setAddDomain(domainMatch());
+  },[user]);
+  function handleClick(){
+    if(!addDomain){
+      handleAddClick();
+    }else{
+      handleRemoveClick();
+    }
+  } 
   return (
     <div
       className={` border border-purple-500 border-l-0 px-2 py-0.5 md:px-4 md:py-1 m-px ml-0 cursor-pointer`}
-      onClick={() => handleAddClick()}
+      onClick={handleClick}
     >
-      +
+      {(addDomain)?"-":'+'}
     </div>
   );
 }
@@ -54,6 +72,8 @@ function DomainCard(props) {
         <DomainCardButton
           handleAddClick={handleAddClick}
           handleRemoveClick={handleRemoveClick}
+          user={user}
+          domain={props.name}
         />
       )}
     </div>

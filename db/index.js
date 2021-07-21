@@ -42,13 +42,25 @@ async function findOne(collection, query) {
   }
 }
 
-async function addSource(collection, query, data){
-  const field = query.field;
-  const _id = new ObjectID(query._id);
+async function addSource(collection, _id, field, data){
+  const id = new ObjectID(_id);
+  const updateObj = {};
+  
+  updateObj[field+'.'+data] = true;
   try{
-    const updateObj = {};
-    updateObj[field.data] = true;
-    const user = await client.collection(collection).findOneAndUpdate({_id:_id},{$set:updateObj},{returnOriginal:false});
+    const user = await client.collection(collection).findOneAndUpdate({_id:id},{$set:updateObj},{returnOriginal:false});
+    return user;
+  }catch(e){
+    return Promise.reject(e);
+  }
+}
+
+async function removeSource(collection,_id,field,data){
+  const id = new ObjectID(_id);
+  const updateObj = {};
+  updateObj[field+'.'+data] = false;
+  try{
+    const user = await client.collection(collection).findOneAndUpdate({_id:id},{$set:updateObj},{returnOriginal:false});
     return user;
   }catch(e){
     return Promise.reject(e);
@@ -65,7 +77,8 @@ module.exports = {
   close,
   insertOne,
   findOne,
-  addSource
+  addSource,
+  removeSource
 };
 
 /* class databaseMethods {

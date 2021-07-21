@@ -24,6 +24,16 @@ function App() {
     checkAuth();
   }, [currentUser]);
 
+
+  async function handleLogout(){
+    try{
+      await axios.get('/auth/logout');
+      setUser(null);
+    }catch(e){
+      console.log(e);
+    }
+  }
+
   console.log("current user", currentUser);
   if (isLoading) {
     return (
@@ -63,7 +73,10 @@ function App() {
           <Header>
             <Fragment>
               <ButtonLink url="/" name="My feed" type="primary" />
-              <ButtonLink url="/auth/logout" name="Log out" type="secondary" />
+              <div onClick={handleLogout}>
+              <ButtonLink url="#" name="Log out" type="secondary" />
+              </div>
+              
             </Fragment>
           </Header>
           <Switch>
@@ -73,6 +86,7 @@ function App() {
             <Route path="/auth/login">
               <Redirect to="/" />
             </Route>
+         
             <Route path="/">
               <Body />
             </Route>

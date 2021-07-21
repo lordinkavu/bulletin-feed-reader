@@ -27,6 +27,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new FileStore(),
+    sameSite:'none'
   })
 );
 
@@ -93,7 +94,7 @@ db.connect()
 app.use("/auth", auth);
 app.use("/user",user);
 
-app.get("/favicon.ico", (req, res) => res.sendStatus(200));
+
 
 /* app.get("/articles/:domain", async (req, res) => {
   const cursor = db_obj.client
