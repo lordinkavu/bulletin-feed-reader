@@ -18,13 +18,14 @@ function LogIn( ) {
       const res = await axios.post("/auth/login", { email, password });
       setUser(JSON.stringify(res.data));
     } catch (e) {
+
       setEmail("");
       setPassword("");
-      switch (e.response.status) {
-        case 401:
+      switch (e) {
+        case e.response.status===401:
           console.log("email or password is not correct ig");
           break;
-        case 500:
+        case e.response.status===500:
           console.log("internal server error");
           break;
         default:

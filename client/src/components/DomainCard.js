@@ -63,7 +63,7 @@ function DomainCard(props) {
         className={`font-light px-2 py-0.5 text-sm md:text-base md:px-4 md:py-1 cursor-pointer m-px mr-0  ${
           props.name === props.activeDomain
             ? `text-white bg-purple-500`
-            : ` border-2 border-purple-500`
+            : ` border-2 border-r border-purple-500`
         } `}
       >
         {props.name}

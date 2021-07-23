@@ -72,7 +72,7 @@ function App() {
         <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
           <Header>
             <Fragment>
-              <ButtonLink url="/" name="My feed" type="primary" />
+              <ButtonLink url="/feed" name="My feed" type="primary" />
               <div onClick={handleLogout}>
               <ButtonLink url="#" name="Log out" type="secondary" />
               </div>
@@ -80,8 +80,8 @@ function App() {
             </Fragment>
           </Header>
           <Switch>
-            <Route path="/auth/signup">
-              <Redirect to="/" />
+            <Route path="/feed">
+              <div></div>
             </Route>
             <Route path="/auth/login">
               <Redirect to="/" />
