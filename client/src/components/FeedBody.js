@@ -1,11 +1,11 @@
 import { useEffect, useContext, useState } from "react";
 import axios from "axios";
-import { userContext } from "../Context";
+//import { userContext } from "../Context";
 
 import ArticleList from "./ArticleList";
 
 function FeedBody() {
-  const user = JSON.parse(useContext(userContext).user);
+  //const user = JSON.parse(useContext(userContext).user);
   const [isLoading, setIsLoading] = useState(true);
   const [articles, setArticles] = useState([]);
 
@@ -24,17 +24,17 @@ function FeedBody() {
   }, []);
   if (isLoading) {
     return (
-      <div className=" flex justify-center items-center h-screen">
+      <div className=" w-full flex justify-center items-center h-screen">
         <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
       </div>
     );
-  } else if (articles.length == 0) {
+  } else if (articles.length === 0) {
     return <div>Nothing here :(</div>;
   } else {
     return(
-      <section>
+      <div className='md:mx-8'>
         <ArticleList articles={articles}/>
-      </section>
+      </div>
     )
     
   }

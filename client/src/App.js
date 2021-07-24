@@ -4,6 +4,7 @@ import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
 import FeedBody from "./components/FeedBody";
+import SideBar from "./components/SideBar";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useState, Fragment, useEffect } from "react";
 import { userContext } from "./Context";
@@ -82,7 +83,11 @@ function App() {
           </Header>
           <Switch>
             <Route path="/feed">
+              <section className=" flex flex-col md:flex-row  ">
+                <SideBar/>
               <FeedBody/>
+              </section>
+              
             </Route>
             <Route path="/auth/login">
               <Redirect to="/" />
