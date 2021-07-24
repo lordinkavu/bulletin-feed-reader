@@ -42,27 +42,54 @@ async function findOne(collection, query) {
   }
 }
 
-async function addSource(collection, _id, field, data){
+async function addSource(_id, field, data) {
   const id = new ObjectID(_id);
   const updateObj = {};
-  
-  updateObj[field+'.'+data] = true;
-  try{
-    const user = await client.collection(collection).findOneAndUpdate({_id:id},{$set:updateObj},{returnOriginal:false});
+
+  updateObj[field + "." + data] = true;
+  try {
+    const user = await client
+      .collection("users")
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: updateObj },
+        { returnOriginal: false }
+      );
     return user;
-  }catch(e){
+  } catch (e) {
     return Promise.reject(e);
   }
 }
 
-async function removeSource(collection,_id,field,data){
+async function removeSource(_id, field, data) {
   const id = new ObjectID(_id);
   const updateObj = {};
-  updateObj[field+'.'+data] = false;
-  try{
-    const user = await client.collection(collection).findOneAndUpdate({_id:id},{$set:updateObj},{returnOriginal:false});
+  updateObj[field + "." + data] = false;
+  try {
+    const user = await client
+      .collection("users")
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: updateObj },
+        { returnOriginal: false }
+      );
     return user;
-  }catch(e){
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+async function fetchArticles(domains) {
+  try {
+    const articles = await client
+      .collection("articles")
+      .find({ domain: { $in: domains } })
+      .sort({ pubDate: -1 })
+      .limit(100)
+      .toArray();
+
+    return articles;
+  } catch (e) {
     return Promise.reject(e);
   }
 }
@@ -78,7 +105,8 @@ module.exports = {
   insertOne,
   findOne,
   addSource,
-  removeSource
+  removeSource,
+  fetchArticles,
 };
 
 /* class databaseMethods {

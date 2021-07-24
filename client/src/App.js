@@ -3,6 +3,7 @@ import Body from "./components/Body";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
+import FeedBody from "./components/FeedBody";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useState, Fragment, useEffect } from "react";
 import { userContext } from "./Context";
@@ -81,7 +82,7 @@ function App() {
           </Header>
           <Switch>
             <Route path="/feed">
-              <div></div>
+              <FeedBody/>
             </Route>
             <Route path="/auth/login">
               <Redirect to="/" />
