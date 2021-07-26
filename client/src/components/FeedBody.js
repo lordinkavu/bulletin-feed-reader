@@ -1,35 +1,42 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 //import { userContext } from "../Context";
 
 import ArticleList from "./ArticleList";
 
-function FeedBody() {
+function FeedBody(props) {
   //const user = JSON.parse(useContext(userContext).user);
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
   const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
+  useEffect(()=>{
+    async function fetchDomainArticles(){
+      try{
+        const {data:articles} = await axios.get("/articles/domain/" + props.selectedDomain);
+        setArticles(Array.from(articles));
+      }catch(e){
+        console.log(e);
+      }
+    }
+    fetchDomainArticles();
+  },[props.selectedDomain]);
+  
+  /* useEffect(() => {
     async function fetchdata() {
       try {
         const { data: articles } = await axios.get(`user/feed/all`);
         setArticles(articles);
-        setIsLoading(false);
+        //setIsLoading(false);
         
       } catch (e) {
         console.log(e);
       }
     }
-    fetchdata();
-  }, []);
-  if (isLoading) {
-    return (
-      <div className=" w-full flex justify-center items-center h-screen">
-        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
-      </div>
-    );
-  } else if (articles.length === 0) {
-    return <div>Nothing here :(</div>;
+    if(props.user) fetchdata();
+  }, [props.user]) */;
+
+  
+  if (articles.length === 0) {
+    return <div></div>;
   } else {
     return(
       <div className='md:mx-8'>

@@ -79,15 +79,23 @@ async function removeSource(_id, field, data) {
   }
 }
 
-async function fetchArticles(domains) {
+async function fetchDomains() {
+  try {
+    const sources = await client.collection("sources").distinct("domain");
+    return sources;
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+async function fetchArticles(query) {
   try {
     const articles = await client
       .collection("articles")
-      .find({ domain: { $in: domains } })
+      .find(query)
       .sort({ pubDate: -1 })
       .limit(100)
       .toArray();
-
     return articles;
   } catch (e) {
     return Promise.reject(e);
@@ -107,6 +115,7 @@ module.exports = {
   addSource,
   removeSource,
   fetchArticles,
+  fetchDomains,
 };
 
 /* class databaseMethods {

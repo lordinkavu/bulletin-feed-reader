@@ -1,5 +1,5 @@
 import Header from "./components/Header";
-import Body from "./components/Body";
+
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
@@ -10,9 +10,55 @@ import { useState, Fragment, useEffect } from "react";
 import { userContext } from "./Context";
 import axios from "axios";
 
+function HeaderButtons({ user, handleLogout }) {
+  if (user) {
+    return (
+      <Fragment>
+        <div onClick={handleLogout}>
+          <ButtonLink url="#" name="Log out" type="secondary" />
+        </div>
+      </Fragment>
+    );
+  } else {
+    return (
+      <Fragment>
+        {" "}
+        <ButtonLink url="/auth/signup" name="Sign up" type="primary" />
+        <ButtonLink url="/auth/login" name="Log in" type="secondary" />
+      </Fragment>
+    );
+  }
+}
+
+function Body({user}) {
+  const [domains, setDomains] = useState([]);
+  const [selectedDomain, setSelectedDomain] = useState(null);
+  //const [articles,setArticles] = useState([]);
+  
+  useEffect(() => {
+    async function fetchDomains() {
+      try {
+        const { data: domains } = await axios.get("/articles/domains");
+        setDomains(domains);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchDomains();
+  }, []);
+
+
+
+  return (
+    <section className="flex flex-col md:flex-row ">
+      <SideBar user={user} domains={domains} setSelectedDomain= {setSelectedDomain} />
+      <FeedBody user={user} selectedDomain={selectedDomain} />
+    </section>
+  );
+}
+
 function App() {
   const [currentUser, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function checkAuth() {
       try {
@@ -21,86 +67,43 @@ function App() {
       } catch (e) {
         setUser(null);
       }
-      setIsLoading(false);
+      //setIsLoading(false);
     }
     checkAuth();
   }, [currentUser]);
+  //const [isLoading, setIsLoading] = useState(true);
 
+  
 
-  async function handleLogout(){
-    try{
-      await axios.get('/auth/logout');
+  async function handleLogout() {
+    try {
+      await axios.get("/auth/logout");
       setUser(null);
-    }catch(e){
+    } catch (e) {
       console.log(e);
     }
   }
 
-  console.log("current user", currentUser);
-  if (isLoading) {
-    return (
-      <div className=" flex justify-center items-center h-screen">
-        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-10 w-10"></div>
-      </div>
-    );
-  } else if (!currentUser) {
-    return (
-      <div className="App ">
-        <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
-          <Header>
-            <Fragment>
-              {" "}
-              <ButtonLink url="/auth/signup" name="Sign up" type="primary" />
-              <ButtonLink url="/auth/login" name="Log in" type="secondary" />
-            </Fragment>
-          </Header>
-          <Switch>
-            <Route path="/auth/signup">
-              <SignUp />
-            </Route>
-            <Route path="/auth/login">
-              <LogIn />
-            </Route>
-            <Route path="/">
-              <Body />
-            </Route>
-          </Switch>
-        </userContext.Provider>
-      </div>
-    );
-  } else {
-    return (
-      <div className="App ">
-        <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
-          <Header>
-            <Fragment>
-              <ButtonLink url="/feed" name="My feed" type="primary" />
-              <div onClick={handleLogout}>
-              <ButtonLink url="#" name="Log out" type="secondary" />
-              </div>
-              
-            </Fragment>
-          </Header>
-          <Switch>
-            <Route path="/feed">
-              <section className=" flex flex-col md:flex-row  ">
-                <SideBar/>
-              <FeedBody/>
-              </section>
-              
-            </Route>
-            <Route path="/auth/login">
-              <Redirect to="/" />
-            </Route>
-         
-            <Route path="/">
-              <Body />
-            </Route>
-          </Switch>
-        </userContext.Provider>
-      </div>
-    );
-  }
+  return (
+    <div className="App max-w-screen-lg mx-auto">
+      <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
+        <Header>
+          <HeaderButtons user={currentUser} handleLogout={handleLogout} />
+        </Header>
+        <Switch>
+          <Route path="/auth/signup">
+            {currentUser ? <Redirect to="/" /> : <SignUp />}
+          </Route>
+          <Route path="/auth/login">
+            {currentUser ? <Redirect to="/" /> : <LogIn />}
+          </Route>
+          <Route path="/">
+            <Body user={currentUser} />
+          </Route>
+        </Switch>
+      </userContext.Provider>
+    </div>
+  );
 }
 
 export default App;

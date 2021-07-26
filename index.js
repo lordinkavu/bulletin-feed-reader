@@ -12,7 +12,7 @@ const { validPassword } = require("./utils/encrypt");
 
 const auth = require("./routes/auth");
 const user = require("./routes/user");
-
+const articles = require("./routes/articles");
 const app = express();
 dotenv.config();
 const port = process.env.PORT || 8080;
@@ -93,7 +93,7 @@ db.connect()
 
 app.use("/auth", auth);
 app.use("/user",user);
-
+app.use("/articles",articles);
 
 
 /* app.get("/articles/:domain", async (req, res) => {
