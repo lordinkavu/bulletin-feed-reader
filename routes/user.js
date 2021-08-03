@@ -9,36 +9,39 @@ router.use(function authorize(req, res, next) {
   }
 });
 
-router.post("/add/:field/:domain", async function (req, res) {
+router.patch("/add/:field/:_id", async function (req, res) {
+  
   const _id = req.session.passport.user;
+
+
   try {
     const data = await addSource(
     
       _id,
       req.params.field,
-      req.params.domain
+      req.params._id
     );
     const user = data.value;
 
-    res.json({ email: user.email, domain: user.domain });
+    res.json({ email: user.email, site: user.site });
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 });
 
-router.post("/remove/:field/:domain", async function (req, res) {
+router.patch("/remove/:field/:_id", async function (req, res) {
   const _id = req.session.passport.user;
   try {
     const data = await removeSource(
       
       _id,
       req.params.field,
-      req.params.domain
+      req.params._id
     );
     const user = data.value;
 
-    res.json({ email: user.email, domain: user.domain });
+    res.json({ email: user.email, site: user.site });
   } catch (e) {
     console.log(e);
     res.sendStatus(500);

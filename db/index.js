@@ -64,6 +64,7 @@ async function addSource(_id, field, data) {
 async function removeSource(_id, field, data) {
   const id = new ObjectID(_id);
   const updateObj = {};
+
   updateObj[field + "." + data] = false;
   try {
     const user = await client
@@ -81,12 +82,23 @@ async function removeSource(_id, field, data) {
 
 async function fetchDomains() {
   try {
-    const sources = await client.collection("sources").distinct("domain");
-    return sources;
+    const domains = await client.collection("sources").distinct("domain");
+    return domains;
   } catch (e) {
     return Promise.reject(e);
   }
 }
+
+async function fetchSites(domain) {
+  try {
+    const sites = await client.collection("sources").find({domain:domain}).toArray();
+    return sites;
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+
 
 async function fetchArticles(query) {
   try {
@@ -103,7 +115,7 @@ async function fetchArticles(query) {
 }
 
 function close() {
-  mongodb.close();
+  client.close();
 }
 
 module.exports = {
@@ -116,6 +128,7 @@ module.exports = {
   removeSource,
   fetchArticles,
   fetchDomains,
+  fetchSites
 };
 
 /* class databaseMethods {

@@ -1,5 +1,6 @@
 const router = require("express").Router();
-const {fetchDomains, fetchArticles} = require('../db');
+const {fetchDomains, fetchArticles, fetchSites} = require('../db');
+
 router.get('/domains',async(req,res)=>{
     try{
         const domains = await fetchDomains();
@@ -9,6 +10,15 @@ router.get('/domains',async(req,res)=>{
     }
    
    
+});
+
+router.get('/sites/:domain', async(req,res)=>{
+    try{
+        const sites = await fetchSites(req.params.domain);
+        res.json(sites);
+    }catch(e){
+        res.sendStatus(500);
+    }
 })
 
 router.get('/domain/:name', async(req,res)=>{

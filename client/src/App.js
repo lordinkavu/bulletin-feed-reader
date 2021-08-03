@@ -1,10 +1,8 @@
 import Header from "./components/Header";
-
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import ButtonLink from "./components/ButtonLink";
-import FeedBody from "./components/FeedBody";
-import SideBar from "./components/SideBar";
+import Body from "./components/Body";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useState, Fragment, useEffect } from "react";
 import { userContext } from "./Context";
@@ -30,32 +28,6 @@ function HeaderButtons({ user, handleLogout }) {
   }
 }
 
-function Body({user}) {
-  const [domains, setDomains] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState(null);
-  //const [articles,setArticles] = useState([]);
-  
-  useEffect(() => {
-    async function fetchDomains() {
-      try {
-        const { data: domains } = await axios.get("/articles/domains");
-        setDomains(domains);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    fetchDomains();
-  }, []);
-
-
-
-  return (
-    <section className="flex flex-col md:flex-row ">
-      <SideBar user={user} domains={domains} setSelectedDomain= {setSelectedDomain} />
-      <FeedBody user={user} selectedDomain={selectedDomain} />
-    </section>
-  );
-}
 
 function App() {
   const [currentUser, setUser] = useState(null);
@@ -72,8 +44,6 @@ function App() {
     checkAuth();
   }, [currentUser]);
   //const [isLoading, setIsLoading] = useState(true);
-
-  
 
   async function handleLogout() {
     try {
@@ -98,7 +68,7 @@ function App() {
             {currentUser ? <Redirect to="/" /> : <LogIn />}
           </Route>
           <Route path="/">
-            <Body user={currentUser} />
+            <Body/>
           </Route>
         </Switch>
       </userContext.Provider>

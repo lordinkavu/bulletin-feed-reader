@@ -17,7 +17,7 @@ const app = express();
 dotenv.config();
 const port = process.env.PORT || 8080;
 
-//app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -65,7 +65,7 @@ passport.deserializeUser(function (id, done) {
   db.findOne("users", { _id: id })
     .then((user) => {
       
-      done(error, {email:user.email,domain:user.domain});
+      done(error, {email:user.email,site:user.site});
     })
     .catch((error) => {
      done(error, user);
