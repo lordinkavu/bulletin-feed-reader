@@ -4,10 +4,11 @@ const dotenv = require("dotenv");
 const db = require("./db");
 const cors = require("cors");
 const path = require("path");
-const session = require("express-session");
-const FileStore = require("session-file-store")(session);
+
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const {Strategy:JwtStrategy, ExtractJwt } = require("passport-jwt");
+
 const { validPassword } = require("./utils/encrypt");
 
 const auth = require("./routes/auth");
@@ -21,18 +22,26 @@ app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: false,
-    store: new FileStore(),
-    sameSite:'none'
-  })
-);
 
 app.use(passport.initialize());
-app.use(passport.session());
+
+const JwtOptions = {
+  jwtFromRequest : ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey : "secret",
+}
+
+passport.use(
+  new JwtStrategy( JwtOptions,  async function (
+    jwt_payload,
+    done
+  ) {
+    try {
+      return done(null, {_id: jwt_payload._id});
+    } catch (e) {
+      return done(e);
+    }
+  }) 
+);
 
 passport.use(
   new LocalStrategy({ usernameField: "email" }, async function (
@@ -41,13 +50,15 @@ passport.use(
     done
   ) {
     try {
-      const user = await db.findOne("users", { email: email });
+      
+      const user = await db.findUser({ email: email });
       if (!user) {
         return done(null, false, { message: "username or password not valid" });
       }
       const isPasswordValid = await validPassword(password, user.password);
       if (!isPasswordValid)
         return done(null, false, { message: "username or password not valid" });
+      
       return done(null, user);
     } catch (e) {
       return done(e);
@@ -55,30 +66,8 @@ passport.use(
   })
 );
 
-passport.serializeUser(function (user, done) {
-  done(null, user._id);
-});
 
-passport.deserializeUser(function (id, done) {
-  let error = null;
-  let user = null;
-  db.findOne("users", { _id: id })
-    .then((user) => {
-      
-      done(error, {email:user.email,site:user.site});
-    })
-    .catch((error) => {
-     done(error, user);
-    });
-  /* 
-  try{
-    user =  await db.findOne("users",{_id:id});
-  }catch(e){
-    error = e;
-  } */
 
-  //done(null, { _id: "vdhsvhs", email: "test", password: "test" });
-});
 
 db.connect()
   .then(() => {

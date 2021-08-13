@@ -32,10 +32,10 @@ async function insertOne(collection, data) {
   }
 }
 
-async function findOne(collection, query) {
-  if (query._id) query._id = new ObjectID(query._id);
+async function findUser(query) {
+  if(query._id) query._id = new ObjectID(query._id);
   try {
-    const user = await client.collection(collection).findOne(query);
+    const user = await client.collection("users").findOne(query);
     return user;
   } catch (e) {
     return Promise.reject(e);
@@ -123,7 +123,7 @@ module.exports = {
   get,
   close,
   insertOne,
-  findOne,
+  findUser,
   addSource,
   removeSource,
   fetchArticles,

@@ -2,10 +2,10 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { userContext } from "../Context";
 
-function LogIn( ) {
+function LogIn({setIsLoggedIn} ) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useContext(userContext);
+
   function handleEmailChange(e) {
     setEmail(e.target.value);
   }
@@ -15,8 +15,10 @@ function LogIn( ) {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const res = await axios.post("/auth/login", { email, password });
-      setUser(JSON.stringify(res.data));
+      const {data:res} = await axios.post("/auth/login", { email, password });
+      localStorage.setItem("token",res.token);
+      setIsLoggedIn(true);
+    
     } catch (e) {
 
       setEmail("");

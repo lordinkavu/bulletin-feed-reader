@@ -3,21 +3,18 @@ const router = express.Router();
 const { hash } = require("../utils/encrypt");
 const { insertOne } = require("../db");
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 // Authentcation middleware
 
-function authenticate(req, res, next) {
-  passport.authenticate("local", function (err, user, info) {
+function localAuthenticate(req, res, next) {
+  passport.authenticate("local", { session: false }, function (err, user) {
     if (err) return res.sendStatus(500);
     if (!user) {
       return res.sendStatus(401);
     }
-
-    req.login(user, function (err) {
-      if (err) return res.sendStatus(500);
-
-      return next();
-    });
+    const token = jwt.sign({ _id: user._id }, "secret");
+    return res.json({ token });
   })(req, res, next);
 }
 
@@ -25,9 +22,7 @@ router.post("/signup", async (req, res) => {
   try {
     const password = await hash(req.body.password);
     const email = req.body.email;
-    const domain = {};
-    
-    await insertOne("users", { email, password, domain });
+    await insertOne("users", { email, password });
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
@@ -35,24 +30,10 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("/login", authenticate, (req, res) => {
-  const user = req.user;
-  res.json({email:user.email,domain:user.domain});
-});
+router.post("/login", localAuthenticate);
 
-router.get('/logout',(req,res)=>{
-  req.logout();
+router.get("/check", passport.authenticate('jwt',{session:false}),(req, res) => {
   res.sendStatus(200);
-})
-
-router.get("/check", (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.sendStatus(401);
-  }
 });
-
-
 
 module.exports = router;

@@ -6,10 +6,14 @@ import Body from "./components/Body";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { useState, Fragment, useEffect } from "react";
 import { userContext } from "./Context";
-import axios from "axios";
 
-function HeaderButtons({ user, handleLogout }) {
-  if (user) {
+
+function HeaderButtons({ isLoggedIn,setIsLoggedIn }) {
+  function handleLogout(){
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  }
+  if (isLoggedIn) {
     return (
       <Fragment>
         <div onClick={handleLogout}>
@@ -30,42 +34,27 @@ function HeaderButtons({ user, handleLogout }) {
 
 
 function App() {
-  const [currentUser, setUser] = useState(null);
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await axios.get("/auth/check", { withCredentials: true });
-        setUser(JSON.stringify(res.data));
-      } catch (e) {
-        setUser(null);
-      }
-      //setIsLoading(false);
-    }
-    checkAuth();
-  }, [currentUser]);
-  //const [isLoading, setIsLoading] = useState(true);
 
-  async function handleLogout() {
-    try {
-      await axios.get("/auth/logout");
-      setUser(null);
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const [currentUser, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  useEffect(()=>{
+    if(localStorage.getItem("token"))
+    setIsLoggedIn(true);
+  },[])
 
   return (
     <div className="App max-w-screen-lg mx-auto">
-      <userContext.Provider value={{ user: currentUser, setUser: setUser }}>
+      <userContext.Provider value={{ user: currentUser, setUser: setUser, isLoggedIn:isLoggedIn }}>
         <Header>
-          <HeaderButtons user={currentUser} handleLogout={handleLogout} />
+          <HeaderButtons isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         </Header>
         <Switch>
           <Route path="/auth/signup">
-            {currentUser ? <Redirect to="/" /> : <SignUp />}
+            {isLoggedIn ? <Redirect to="/" /> : <SignUp />}
           </Route>
           <Route path="/auth/login">
-            {currentUser ? <Redirect to="/" /> : <LogIn />}
+            {isLoggedIn ? <Redirect to="/" /> : <LogIn setIsLoggedIn={setIsLoggedIn} />}
           </Route>
           <Route path="/">
             <Body/>
