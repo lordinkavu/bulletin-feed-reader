@@ -1,62 +1,31 @@
 const router = require("express").Router();
-const { addSource, removeSource, fetchArticles } = require("../db");
+const { editUserSites, fetchArticles, findUser } = require("../db");
+const passport = require('passport');
+const { ObjectID } = require("mongodb");
 
-router.use(function authorize(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.sendStatus(401);
+router.use(passport.authenticate('jwt',{session:false}));
+
+router.get('/',(req,res)=>{
+  console.log(req.user);
+  res.sendStatus(200);
+});
+
+router.get('/sites' , async(req,res)=>{
+  try{
+    const user = await findUser({_id:req.user._id});
+    res.json(user.site);
+  }catch(e){
+    res.sendStatus(404);
   }
-});
+})
 
-router.patch("/add/:field/:_id", async function (req, res) {
-  
-  const _id = req.session.passport.user;
-
-
-  try {
-    const data = await addSource(
-    
-      _id,
-      req.params.field,
-      req.params._id
-    );
-    const user = data.value;
-
-    res.json({ email: user.email, site: user.site });
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
-
-router.patch("/remove/:field/:_id", async function (req, res) {
-  const _id = req.session.passport.user;
-  try {
-    const data = await removeSource(
-      
-      _id,
-      req.params.field,
-      req.params._id
-    );
-    const user = data.value;
-
-    res.json({ email: user.email, site: user.site });
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
-
-router.get("/feed/:domain", async (req, res) => {
-    const user = req.user;
-    const domain_list=[];
-    for(const prop in user.domain){
-      if(user.domain[prop]===true) domain_list.push(prop);
-    }
-    const articles  = await fetchArticles(domain_list);
-    
-    res.json(articles);
-});
+router.put('/sites', async(req,res)=>{
+  try{
+    const user = await editUserSites({_id:req.user._id}, req.body.sites);
+    res.json(user.site);
+  }catch(e){
+    res.sendStatus(501);
+  } 
+})
 
 module.exports = router;

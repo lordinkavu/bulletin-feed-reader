@@ -1,25 +1,36 @@
-import { useEffect,useState} from "react";
+import { useEffect,useState, useCallback} from "react";
 
 import SiteName from "./SiteName";
 import axios from 'axios';
 
 export default function RightBar(props) {
-    const [sites, setSites] = useState();
-    
-  
-    useEffect(() => {
-      async function fetchSites() {
-        try {
-          const { data: sites } = await axios.get(
-            "/articles/sites/" + props.selectedDomain
-          );
-          setSites(sites);
-        } catch (e) {
-          console.log(e);
-        }
+    const [sites, setSites] = useState([]);
+    const [userSites, setUserSites] = useState({});
+
+    async function fetchUserSites(){
+      try{
+        const {data} = await axios.get("/user/sites")
+      }catch(e){
+
       }
+    }
+    
+    const fetchSites = useCallback(async()=>{
+      try {
+        const { data } = await axios.get(
+          "/articles/sites/" + props.selectedDomain
+        );
+        setSites(data);
+      } catch (e) {
+        console.log(e);
+      }
+    },[props.selectedDomain]);
+    
+    
+    useEffect(() => {
       fetchSites();
-    }, [props.selectedDomain]);
+    }, [fetchSites]);
+    
     if (!props.selectedDomain || props.selectedDomain === "all") {
       return <div></div>;
     } else {
@@ -28,7 +39,7 @@ export default function RightBar(props) {
           <div className="font-semibold text-gray-500">sites /</div>
           {sites.map((site) => (
         
-            <SiteName key={site._id} site={site.site_name} _id={site._id}/>
+            <SiteName key={site._id} site={site.site_name} _id={site._id} fetchSites={fetchSites}/>
           ))}
         </div>
       );

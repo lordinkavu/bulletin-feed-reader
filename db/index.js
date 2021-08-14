@@ -33,7 +33,7 @@ async function insertOne(collection, data) {
 }
 
 async function findUser(query) {
-  if(query._id) query._id = new ObjectID(query._id);
+  if (query._id) query._id = new ObjectID(query._id);
   try {
     const user = await client.collection("users").findOne(query);
     return user;
@@ -42,17 +42,14 @@ async function findUser(query) {
   }
 }
 
-async function addSource(_id, field, data) {
-  const id = new ObjectID(_id);
-  const updateObj = {};
-
-  updateObj[field + "." + data] = true;
+async function editUserSites(query, sites) {
+  const _id = new ObjectID(query._id);
   try {
     const user = await client
       .collection("users")
       .findOneAndUpdate(
-        { _id: id },
-        { $set: updateObj },
+        { _id: _id },
+        { $set: { site: sites } },
         { returnOriginal: false }
       );
     return user;
@@ -61,24 +58,7 @@ async function addSource(_id, field, data) {
   }
 }
 
-async function removeSource(_id, field, data) {
-  const id = new ObjectID(_id);
-  const updateObj = {};
 
-  updateObj[field + "." + data] = false;
-  try {
-    const user = await client
-      .collection("users")
-      .findOneAndUpdate(
-        { _id: id },
-        { $set: updateObj },
-        { returnOriginal: false }
-      );
-    return user;
-  } catch (e) {
-    return Promise.reject(e);
-  }
-}
 
 async function fetchDomains() {
   try {
@@ -91,14 +71,15 @@ async function fetchDomains() {
 
 async function fetchSites(domain) {
   try {
-    const sites = await client.collection("sources").find({domain:domain}).toArray();
+    const sites = await client
+      .collection("sources")
+      .find({ domain: domain })
+      .toArray();
     return sites;
   } catch (e) {
     return Promise.reject(e);
   }
 }
-
-
 
 async function fetchArticles(query) {
   try {
@@ -124,32 +105,8 @@ module.exports = {
   close,
   insertOne,
   findUser,
-  addSource,
-  removeSource,
+  editUserSites,
   fetchArticles,
   fetchDomains,
-  fetchSites
+  fetchSites,
 };
-
-/* class databaseMethods {
-  constructor(uri) {
-    this.client = new MongoClient(uri,{ useUnifiedTopology: true });
-  }
-  async init() {
-    try {
-      await this.client.connect();
-     console.log("connected to db")
-    
-      return Promise.resolve();
-    } catch (e) {
-      console.log(e.message);
-      return Promise.reject();
-    }
-  }
-  close() {
-    this.client.close();
-  }
-}
-
-module.exports = databaseMethods;
- */

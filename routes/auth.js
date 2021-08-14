@@ -6,7 +6,6 @@ const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
 // Authentcation middleware
-
 function localAuthenticate(req, res, next) {
   passport.authenticate("local", { session: false }, function (err, user) {
     if (err) return res.sendStatus(500);
@@ -18,6 +17,7 @@ function localAuthenticate(req, res, next) {
   })(req, res, next);
 }
 
+// Authentication routes
 router.post("/signup", async (req, res) => {
   try {
     const password = await hash(req.body.password);
@@ -32,8 +32,5 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", localAuthenticate);
 
-router.get("/check", passport.authenticate('jwt',{session:false}),(req, res) => {
-  res.sendStatus(200);
-});
 
 module.exports = router;

@@ -13,7 +13,7 @@ function DomainName({domain, setSelectedDomain}){
 
 function SideBar(props) {
   const [domains, setDomains] = useState([]);
-  const user = JSON.parse(useContext(userContext).user);
+  //const user = JSON.parse(useContext(userContext).user);
 
   useEffect(() => {
     async function fetchDomains() {
