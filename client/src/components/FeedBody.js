@@ -13,7 +13,11 @@ export default function FeedBody(props) {
     async function fetchDomainArticles() {
       try {
         const { data: articles } = await axios.get(
-          "/articles/domain/" + props.selectedDomain
+          "/articles",{
+            params:{
+              domain:props.selectedDomain
+            }
+          }
         );
         setArticles(Array.from(articles));
       } catch (e) {

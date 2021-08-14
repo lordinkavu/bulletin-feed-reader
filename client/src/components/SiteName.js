@@ -23,7 +23,7 @@ export default function SiteName(props) {
 
   return (
     <div className="flex space-x-2 items-center">
-      <div className="underline cursor-pointer">{props.site}</div>
+   {/*    <div className="underline cursor-pointer">{props.site}</div>
       {user && user["site"][props._id] !== true && (
         <div onClick={handleAddClick} className="cursor-pointer">
           <Plus color="gray" size={18} />
@@ -33,7 +33,7 @@ export default function SiteName(props) {
         <div onClick={handleRemoveClick} className="cursor-pointer">
           <Minus color="gray" size={18} />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

@@ -5,20 +5,26 @@ import axios from 'axios';
 
 export default function RightBar(props) {
     const [sites, setSites] = useState([]);
-    const [userSites, setUserSites] = useState({});
+  /*   const [userSites, setUserSites] = useState({});
 
     async function fetchUserSites(){
       try{
-        const {data} = await axios.get("/user/sites")
+        const {data} = await axios.get("/user/sites");
+
+
       }catch(e){
 
       }
-    }
+    } */
     
     const fetchSites = useCallback(async()=>{
       try {
         const { data } = await axios.get(
-          "/articles/sites/" + props.selectedDomain
+          "/articles/sites/",{
+            params:{
+              domain:props.selectedDomain
+            }
+          }
         );
         setSites(data);
       } catch (e) {
